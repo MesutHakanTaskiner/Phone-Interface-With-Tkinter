@@ -16,11 +16,11 @@ conn = sqlite3.connect('Telephone.db')
 cursor = conn.cursor()
 
 
-'''cursor.execute("""CREATE TABLE user_informations (
-        User_name text,
+cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
+        User_name text PRIMARY KEY,
         password text
 )""")
-'''
+
 
 def login():
     conn = sqlite3.connect('Telephone.db')
@@ -42,7 +42,7 @@ def login():
         main_screen.title("Main Screen")
     else:
         login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
-        my_label = Label(login_screen, text = login_screen.filename).pack()
+        my_label = Label(login_screen, text = login_screen.filename)
 
 
     conn.commit()
@@ -58,7 +58,7 @@ def register():
     user = user_name.get()
     password = user_password.get()
 
-    cursor.execute('''INSERT INTO user_informations VALUES (?,?)''', (user, password) )
+    cursor.execute('INSERT INTO user_informations VALUES (?,?)', (user, password) )
 
     conn.commit()
 
