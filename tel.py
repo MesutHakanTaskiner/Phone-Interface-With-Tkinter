@@ -15,14 +15,16 @@ conn = sqlite3.connect('Telephone.db')
 
 cursor = conn.cursor()
 
+directory_image = ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Telephone-Interface-With-Tkinter\Image List\Directory.png"))
+photos_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Telephone-Interface-With-Tkinter\Image List\Photos.png"))
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
         User_name text PRIMARY KEY,
         password text
 )""")
 
-
 def login():
+
     conn = sqlite3.connect('Telephone.db')
 
     cursor = conn.cursor()
@@ -38,12 +40,23 @@ def login():
         print_records += str(record) + "\n"
 
     if user == record[0] and password == record[1]:
-        main_screen = Tk()
+        main_screen = Toplevel()
         main_screen.title("Main Screen")
     else:
         login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
         my_label = Label(login_screen, text = login_screen.filename)
 
+    directory_button = Button(main_screen, image = directory_image)
+    directory_button.grid(row = 0, column = 0, padx = 10, pady = 10)
+
+    directory_label = Label(main_screen, text = "Directory")
+    directory_label.grid(row = 1, column = 0, padx = 10)
+
+    Photos_button = Button(main_screen, image = photos_image)
+    Photos_button.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+    Photos_label = Label(main_screen, text = "Photos")
+    Photos_label.grid(row = 1, column = 1, padx = 10)
 
     conn.commit()
 
