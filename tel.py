@@ -15,12 +15,17 @@ conn = sqlite3.connect('Telephone.db')
 
 cursor = conn.cursor()
 
-directory_image = ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Telephone-Interface-With-Tkinter\Image List\Directory.png"))
-photos_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Telephone-Interface-With-Tkinter\Image List\Photos.png"))
+directory_image = ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Directory.png"))
+photos_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Photos.png"))
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
         User_name text PRIMARY KEY,
         password text
+)""")
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS contact_list (
+        persons text,
+        phone_number text
 )""")
 
 def login():
@@ -32,6 +37,32 @@ def login():
     user = user_name.get()
     password = user_password.get()
 
+    def directory():
+        conn = sqlite3.connect('Telephone.db')
+        cursor = conn.cursor()
+
+        directory_screen = Toplevel()
+        directory_screen.title('Directory')
+        
+        my_menu = Menu(directory_screen)
+        directory_screen.config(menu = my_menu)
+
+        file_menu = Menu(my_menu)
+        my_menu.add_cascade(label = "File", menu = file_menu)
+        file_menu.add_command(label = "Exit...", command = directory_screen.quit)
+
+        cursor.execute("SELECT * FROM user_informations")
+        records = cursor.fetchall()
+
+        print_records = ''
+        for record in records:
+            print_records += str(record) + "\n"
+            print(record[1])
+
+        conn.commit()
+        conn.close()
+    
+    
     cursor.execute("SELECT * FROM user_informations")
     records = cursor.fetchall()
 
@@ -46,7 +77,7 @@ def login():
         login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
         my_label = Label(login_screen, text = login_screen.filename)
 
-    directory_button = Button(main_screen, image = directory_image)
+    directory_button = Button(main_screen, image = directory_image, command = directory)
     directory_button.grid(row = 0, column = 0, padx = 10, pady = 10)
 
     directory_label = Label(main_screen, text = "Directory")
@@ -59,7 +90,6 @@ def login():
     Photos_label.grid(row = 1, column = 1, padx = 10)
 
     conn.commit()
-
     conn.close()
 
 
