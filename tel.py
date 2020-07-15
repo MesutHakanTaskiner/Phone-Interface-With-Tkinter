@@ -39,8 +39,7 @@ def login():
 
     if user == record[0] and password == record[1]:
         main_screen = Tk()
-        query_label = Label(main_screen, text = "Main Screen")
-        query_label.grid(row = 0, column = 0)
+        main_screen.title("Main Screen")
     else:
         login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
         my_label = Label(login_screen, text = login_screen.filename).pack()
