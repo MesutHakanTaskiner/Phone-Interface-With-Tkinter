@@ -24,18 +24,51 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
 )""")
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS contact_list (
+        namee text PRIMARY KEY,
         persons text,
-        phone_number text
+        phone_number text,
+        FOREIGN KEY(namee) REFERENCES user_informations(User_name)
 )""")
 
 def login():
 
     conn = sqlite3.connect('Telephone.db')
-
     cursor = conn.cursor()
 
     user = user_name.get()
     password = user_password.get()
+
+    def add():
+        def add_db():
+            conn = sqlite3.connect('Telephone.db')
+            cursor = conn.cursor()
+            
+            person = person_name.get()
+            call_number = phone_number.get()
+
+            cursor.execute('INSERT INTO contact_list VALUES (?,?)', (person, call_number))
+
+            conn.commit()
+            conn.close()        
+
+            add_screen = Toplevel()
+            add_screen.title('Add')
+            add_screen.geometry("250x150")
+
+            person_name_label = Label(add_screen, text = "Name")
+            person_name_label.grid(row = 0, column = 0, padx = 10, pady = 10)
+
+            person_name = Entry(add_screen)
+            person_name.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+            phone_number_label = Label(add_screen, text = "No.")
+            phone_number_label.grid(row = 1, column = 0, padx = 10, pady = 10)
+
+            phone_number = Entry(add_screen)
+            phone_number.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+            add_db_button = Button(add_screen, text = "Add", command = add_db)
+            add_db_button.grid(row = 2, column = 1)
 
     def directory():
         conn = sqlite3.connect('Telephone.db')
@@ -47,21 +80,25 @@ def login():
         my_menu = Menu(directory_screen)
         directory_screen.config(menu = my_menu)
 
+        username = user_name.get()
+
         file_menu = Menu(my_menu)
         my_menu.add_cascade(label = "File", menu = file_menu)
+        file_menu.add_command(label = "Add", command = add)
+        file_menu.add_separator()
         file_menu.add_command(label = "Exit...", command = directory_screen.quit)
 
-        cursor.execute("SELECT * FROM user_informations")
+        #cursor.execute("SELECT * FROM contact_list WHERE namee = '" + username + "'")
         records = cursor.fetchall()
 
         print_records = ''
         for record in records:
             print_records += str(record) + "\n"
-            print(record[1])
+        
+        print(print_records)
 
         conn.commit()
         conn.close()
-    
     
     cursor.execute("SELECT * FROM user_informations")
     records = cursor.fetchall()
@@ -91,7 +128,6 @@ def login():
 
     conn.commit()
     conn.close()
-
 
 def register():
     conn = sqlite3.connect('Telephone.db')
