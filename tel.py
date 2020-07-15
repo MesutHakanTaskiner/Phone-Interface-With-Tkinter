@@ -1,5 +1,7 @@
 from tkinter import *
 from PIL import Image, ImageTk
+import sqlite3
+from tkinter import messagebox
 
 login_screen = Tk()
 login_screen.title('Login Screen')
@@ -9,11 +11,62 @@ login_screen.configure(background = "#9fc2e0")
 my_menu = Menu(login_screen)
 login_screen.config(menu = my_menu)
 
+conn = sqlite3.connect('Telephone.db')
+
+cursor = conn.cursor()
+
+
+'''cursor.execute("""CREATE TABLE user_informations (
+        User_name text,
+        password text
+)""")
+'''
+
 def login():
-    pass
+    conn = sqlite3.connect('Telephone.db')
+
+    cursor = conn.cursor()
+
+    user = user_name.get()
+    password = user_password.get()
+
+    cursor.execute("SELECT * FROM user_informations")
+    records = cursor.fetchall()
+
+    print_records = ''
+    for record in records:
+        print_records += str(record) + "\n"
+
+    if user == record[0] and password == record[1]:
+        main_screen = Tk()
+        query_label = Label(main_screen, text = "Main Screen")
+        query_label.grid(row = 0, column = 0)
+    else:
+        login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
+        my_label = Label(login_screen, text = login_screen.filename).pack()
+
+
+    conn.commit()
+
+    conn.close()
+
 
 def register():
-    pass
+    conn = sqlite3.connect('Telephone.db')
+
+    cursor = conn.cursor()
+
+    user = user_name.get()
+    password = user_password.get()
+
+    cursor.execute('''INSERT INTO user_informations VALUES (?,?)''', (user, password) )
+
+    conn.commit()
+
+    conn.close()
+
+    user_name.delete(0, END)
+    user_password.delete(0, END)
 
 
 file_menu = Menu(my_menu)
@@ -37,5 +90,9 @@ login_button.grid(row = 4, column = 0, pady = 10, padx = 60)
 
 register_button = Button(login_screen, text = "Register", command = register)
 register_button.grid(row = 5, column = 0, pady = 10, padx = 60)
+
+conn.commit()
+
+conn.close()
 
 mainloop()
