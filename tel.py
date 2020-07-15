@@ -81,7 +81,7 @@ user_name.grid(row = 1, column = 0, pady = 10, padx = 60)
 user_password_label = Label(login_screen, text = "Password", bg = "#9fc2e0")
 user_password_label.grid(row = 2, column = 0, pady = 10, padx = 60)
 
-user_password = Entry(login_screen)
+user_password = Entry(login_screen, show = "*")
 user_password.grid(row = 3, column = 0, pady = 10, padx = 60)
 
 login_button = Button(login_screen, text = "Login", command = login, width = 10)
