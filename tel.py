@@ -24,7 +24,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
 )""")
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS contact_list (
-        namee text PRIMARY KEY,
+        namee text,
         persons text,
         phone_number text,
         FOREIGN KEY(namee) REFERENCES user_informations(User_name)
@@ -45,30 +45,34 @@ def login():
             
             person = person_name.get()
             call_number = phone_number.get()
+            name = user_name.get()
 
-            cursor.execute('INSERT INTO contact_list VALUES (?,?)', (person, call_number))
+            cursor.execute('INSERT INTO contact_list VALUES (?,?,?)', (name, person, call_number))
+
+            person_name.delete(0, END)
+            phone_number.delete(0, END)
 
             conn.commit()
             conn.close()        
 
-            add_screen = Toplevel()
-            add_screen.title('Add')
-            add_screen.geometry("250x150")
+        add_screen = Toplevel()
+        add_screen.title('Add')
+        add_screen.geometry("250x150")
 
-            person_name_label = Label(add_screen, text = "Name")
-            person_name_label.grid(row = 0, column = 0, padx = 10, pady = 10)
+        person_name_label = Label(add_screen, text = "Name")
+        person_name_label.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-            person_name = Entry(add_screen)
-            person_name.grid(row = 0, column = 1, padx = 10, pady = 10)
+        person_name = Entry(add_screen)
+        person_name.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-            phone_number_label = Label(add_screen, text = "No.")
-            phone_number_label.grid(row = 1, column = 0, padx = 10, pady = 10)
+        phone_number_label = Label(add_screen, text = "No.")
+        phone_number_label.grid(row = 1, column = 0, padx = 10, pady = 10)
 
-            phone_number = Entry(add_screen)
-            phone_number.grid(row = 1, column = 1, padx = 10, pady = 10)
+        phone_number = Entry(add_screen)
+        phone_number.grid(row = 1, column = 1, padx = 10, pady = 10)
 
-            add_db_button = Button(add_screen, text = "Add", command = add_db)
-            add_db_button.grid(row = 2, column = 1)
+        add_db_button = Button(add_screen, text = "Add", command = add_db)
+        add_db_button.grid(row = 2, column = 1)
 
     def directory():
         conn = sqlite3.connect('Telephone.db')
@@ -80,27 +84,26 @@ def login():
         my_menu = Menu(directory_screen)
         directory_screen.config(menu = my_menu)
 
-        username = user_name.get()
-
         file_menu = Menu(my_menu)
         my_menu.add_cascade(label = "File", menu = file_menu)
         file_menu.add_command(label = "Add", command = add)
         file_menu.add_separator()
         file_menu.add_command(label = "Exit...", command = directory_screen.quit)
 
-        #cursor.execute("SELECT * FROM contact_list WHERE namee = '" + username + "'")
+        cursor.execute("SELECT * FROM contact_list WHERE namee = ?", (user,))
         records = cursor.fetchall()
 
         print_records = ''
         for record in records:
-            print_records += str(record) + "\n"
-        
-        print(print_records)
+            print_records += str(record[1]) + " " + str(record[2]) + "\n"        
+
+        query_label = Label(directory_screen, text = print_records)
+        query_label.grid(row = 0, column = 0, sticky = W, pady = 3)
 
         conn.commit()
         conn.close()
     
-    cursor.execute("SELECT * FROM user_informations")
+    cursor.execute("SELECT * FROM user_informations WHERE User_name = ? and password = ?", (user, password))
     records = cursor.fetchall()
 
     print_records = ''
