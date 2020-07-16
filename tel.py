@@ -149,7 +149,8 @@ def login():
 
     if user == record[0] and password == record[1]:
         main_screen = Toplevel()
-        main_screen.title("Main Screen")
+        main_screen.title(user + "'s Phone")
+        main_screen.geometry("300x300")
     else:
         login_screen.filename = messagebox.showwarning("Error", "Wrong User Name Or Password")
         my_label = Label(login_screen, text = login_screen.filename)
@@ -172,6 +173,9 @@ def login():
     calendar_label = Label(main_screen, text = "Calendar")
     calendar_label.grid(row = 3, column = 0, padx = 10, pady = 10)
 
+    user_name.delete(0, END)
+    user_password.delete(0, END)
+
     conn.commit()
     conn.close()
 
@@ -182,7 +186,11 @@ def register():
     user = user_name.get()
     password = user_password.get()
 
-    cursor.execute('INSERT INTO user_informations VALUES (?,?)', (user, password) )
+    if user != "" and password != "":
+        cursor.execute('INSERT INTO user_informations VALUES (?,?)', (user, password) )
+    else:
+        login_screen.filename = messagebox.showwarning("Error", "Please Enter Your Name Or Password")
+        my_label = Label(login_screen, text = login_screen.filename)
 
     conn.commit()
 
