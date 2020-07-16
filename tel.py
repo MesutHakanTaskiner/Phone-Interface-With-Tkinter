@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 import sqlite3
 from tkinter import messagebox
+import nltk
 
 login_screen = Tk()
 login_screen.title('Login Screen')
@@ -30,15 +31,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS contact_list (
         FOREIGN KEY(namee) REFERENCES user_informations(User_name)
 )""")
 
+my_listbox = NONE
+record = NONE
+second_listbox = NONE
+
 def login():
-
-    conn = sqlite3.connect('Telephone.db')
-    cursor = conn.cursor()
-
-    user = user_name.get()
-    password = user_password.get()
-
+    global record
     def add():
+        # Add persons to contact_list
         def add_db():
             conn = sqlite3.connect('Telephone.db')
             cursor = conn.cursor()
@@ -74,18 +74,23 @@ def login():
         add_db_button = Button(add_screen, text = "Add", command = add_db)
         add_db_button.grid(row = 2, column = 1)
 
+    # Directory Function specify contact_list
     def directory():
+        global my_listbox
+        global second_listbox
+
         conn = sqlite3.connect('Telephone.db')
         cursor = conn.cursor()
 
         directory_screen = Toplevel()
         directory_screen.title('Directory')
-        
+        directory_screen.geometry("300x300")
+
         my_menu = Menu(directory_screen)
         directory_screen.config(menu = my_menu)
 
         my_listbox = Listbox(directory_screen, bg="#92badc")
-        my_listbox.grid(row = 0, column = 0, padx = 100, ipadx = 100)
+        my_listbox.grid(row = 0, column = 0, padx = 40, ipadx = 50)
 
         file_menu = Menu(my_menu)
         my_menu.add_cascade(label = "File", menu = file_menu)
@@ -97,16 +102,41 @@ def login():
         records = cursor.fetchall()
 
         print_records = ''
-        for record in records:
-            print_records += str(record[1]) + " " + str(record[2]) + "\n"        
-            my_listbox.insert(END, record[1] +  " " + record[2])
+        for record in records: 
+            my_listbox.insert(END, record[1] + " " + record[2])
 
-        #query_label = Label(directory_screen, text = print_records)
-        #query_label.grid(row = 0, column = 0, sticky = W, pady = 3)
+        delete_button = Button(directory_screen, text = "Delete", command = delete)
+        delete_button.grid(row = 1, column = 1, pady = 10)
+        delete_button.place(x = 130, y = 170)
 
         conn.commit()
         conn.close()
+        
+    # Delete Information From contact_list(Directory)
+    def delete():
+        global my_listbox
     
+        conn = sqlite3.connect('Telephone.db')
+        cursor = conn.cursor()
+
+        item = my_listbox.get(ANCHOR).split()
+
+        delete = "DELETE from contact_list WHERE persons = ? and phone_number = ?"
+
+        cursor.execute(delete, (item[0], item[1]))
+
+        my_listbox.delete(ANCHOR)
+        
+        conn.commit()
+        conn.close()
+
+    # Login Function
+    conn = sqlite3.connect('Telephone.db')
+    cursor = conn.cursor()
+
+    user = user_name.get()
+    password = user_password.get()
+
     cursor.execute("SELECT * FROM user_informations WHERE User_name = ? and password = ?", (user, password))
     records = cursor.fetchall()
 
