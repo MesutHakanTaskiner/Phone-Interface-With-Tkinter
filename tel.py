@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import sqlite3
 from tkinter import messagebox
 import nltk
+import calendar
 
 login_screen = Tk()
 login_screen.title('Login Screen')
@@ -18,6 +19,7 @@ cursor = conn.cursor()
 
 directory_image = ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Directory.png"))
 photos_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Photos.png"))
+calendar_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Calendar.png"))
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
         User_name text PRIMARY KEY,
@@ -163,6 +165,12 @@ def login():
 
     Photos_label = Label(main_screen, text = "Photos")
     Photos_label.grid(row = 1, column = 1, padx = 10)
+
+    calendar_button = Button(main_screen, image = calendar_image)
+    calendar_button.grid(row = 2, column = 0, padx = 10, pady = 10)
+
+    calendar_label = Label(main_screen, text = "Calendar")
+    calendar_label.grid(row = 3, column = 0, padx = 10, pady = 10)
 
     conn.commit()
     conn.close()
