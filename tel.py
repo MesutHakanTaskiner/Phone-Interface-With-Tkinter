@@ -84,6 +84,9 @@ def login():
         my_menu = Menu(directory_screen)
         directory_screen.config(menu = my_menu)
 
+        my_listbox = Listbox(directory_screen, bg="#92badc")
+        my_listbox.grid(row = 0, column = 0, padx = 100, ipadx = 100)
+
         file_menu = Menu(my_menu)
         my_menu.add_cascade(label = "File", menu = file_menu)
         file_menu.add_command(label = "Add", command = add)
@@ -96,9 +99,10 @@ def login():
         print_records = ''
         for record in records:
             print_records += str(record[1]) + " " + str(record[2]) + "\n"        
+            my_listbox.insert(END, record[1] +  " " + record[2])
 
-        query_label = Label(directory_screen, text = print_records)
-        query_label.grid(row = 0, column = 0, sticky = W, pady = 3)
+        #query_label = Label(directory_screen, text = print_records)
+        #query_label.grid(row = 0, column = 0, sticky = W, pady = 3)
 
         conn.commit()
         conn.close()
