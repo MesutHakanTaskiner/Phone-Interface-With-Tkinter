@@ -6,7 +6,7 @@ import nltk
 
 login_screen = Tk()
 login_screen.title('Login Screen')
-login_screen.geometry("250x250")
+login_screen.geometry("250x300")
 login_screen.configure(background = "#9fc2e0")
 
 my_menu = Menu(login_screen)
@@ -37,6 +37,7 @@ second_listbox = NONE
 
 def login():
     global record
+
     def add():
         # Add persons to contact_list
         def add_db():
@@ -168,7 +169,6 @@ def login():
 
 def register():
     conn = sqlite3.connect('Telephone.db')
-
     cursor = conn.cursor()
 
     user = user_name.get()
@@ -182,6 +182,46 @@ def register():
 
     user_name.delete(0, END)
     user_password.delete(0, END)
+
+def member():
+    def member_delete():  
+        conn = sqlite3.connect('Telephone.db')
+        cursor = conn.cursor()
+
+        item = member_listbox.get(ANCHOR).split()
+
+        delete = "DELETE from user_informations WHERE User_name = ? and password = ?"
+
+        cursor.execute(delete, (item[0], item[1]))
+
+        member_listbox.delete(ANCHOR)
+        
+        conn.commit()
+        conn.close()
+
+    conn = sqlite3.connect('Telephone.db')
+    cursor = conn.cursor()
+
+    member_screen = Toplevel()
+    member_screen.title('Members')
+    member_screen.geometry("250x250")
+
+    member_listbox = Listbox(member_screen)
+    member_listbox.grid(row = 0, column = 0, padx = 50, pady = 10)
+
+    cursor.execute('SELECT * from user_informations')    
+    records = cursor.fetchall()
+
+    print_records = ''
+    for members_record in records: 
+        member_listbox.insert(END, members_record[0] + " " + members_record[1])
+    
+    member_delete = Button(member_screen, text = "Delete", command = member_delete)
+    member_delete.grid(row = 2, column = 1)
+    member_delete.place(x = 90, y = 200)
+
+    conn.commit()
+    cursor.close()
 
 
 file_menu = Menu(my_menu)
@@ -206,8 +246,10 @@ login_button.grid(row = 4, column = 0, pady = 10, padx = 60)
 register_button = Button(login_screen, text = "Register", command = register)
 register_button.grid(row = 5, column = 0, pady = 10, padx = 60)
 
-conn.commit()
+registered_member = Button(login_screen, text = "Members", command = member)
+registered_member.grid(row = 6, column = 0, pady = 10, padx = 60)
 
+conn.commit()
 conn.close()
 
 mainloop()
