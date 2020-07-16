@@ -193,7 +193,6 @@ def register():
         my_label = Label(login_screen, text = login_screen.filename)
 
     conn.commit()
-
     conn.close()
 
     user_name.delete(0, END)
