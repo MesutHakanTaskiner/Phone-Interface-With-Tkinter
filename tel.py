@@ -17,9 +17,9 @@ conn = sqlite3.connect('Telephone.db')
 
 cursor = conn.cursor()
 
-directory_image = ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Directory.png"))
-photos_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Photos.png"))
-calendar_image =  ImageTk.PhotoImage(Image.open(r"C:\Users\Hakan\Desktop\Hakan\Software\Github\Phone-Interface-With-Tkinter\Image List\Calendar.png"))
+directory_image = ImageTk.PhotoImage(Image.open("Directory.png"))
+photos_image =  ImageTk.PhotoImage(Image.open("Photos.png"))
+calendar_image =  ImageTk.PhotoImage(Image.open("Calendar.png"))
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS user_informations (
         User_name text PRIMARY KEY,
