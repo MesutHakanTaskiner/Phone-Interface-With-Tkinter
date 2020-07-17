@@ -4,6 +4,7 @@ import sqlite3
 from tkinter import messagebox
 import nltk
 from tkcalendar import *
+from datetime import datetime
 
 login_screen = Tk()
 login_screen.title('Login Screen')
@@ -146,7 +147,9 @@ def login():
         calendar_screen.title('Calendar')
         calendar_screen.geometry("300x400")
 
-        cal = Calendar(calendar_screen, selectmode = "day", year = 2020, manth = 7, day = 17)
+        now = datetime.now()
+
+        cal = Calendar(calendar_screen, selectmode = "day", year = now.year, month = now.month, day = now.day)
         cal.grid(row = 0, column = 1, pady = 20, padx = 25)
 
         date_pick_button = Button(calendar_screen, text = "Get Date", command = date)
