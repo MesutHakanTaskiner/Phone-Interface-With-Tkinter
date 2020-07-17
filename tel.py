@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 import sqlite3
 from tkinter import messagebox
 import nltk
-import calendar
+from tkcalendar import *
 
 login_screen = Tk()
 login_screen.title('Login Screen')
@@ -36,6 +36,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS contact_list (
 my_listbox = NONE
 record = NONE
 second_listbox = NONE
+get_date_label = Label(login_screen, text = "")
 
 def login():
     global record
@@ -133,6 +134,24 @@ def login():
         conn.commit()
         conn.close()
 
+    def calendar():
+        def date():
+            global get_date_label
+
+            get_date_label.grid_forget()
+            get_date_label = Label(calendar_screen, text = cal.get_date())
+            get_date_label.grid(row = 2, column = 1)
+
+        calendar_screen = Toplevel()
+        calendar_screen.title('Calendar')
+        calendar_screen.geometry("300x400")
+
+        cal = Calendar(calendar_screen, selectmode = "day", year = 2020, manth = 7, day = 17)
+        cal.grid(row = 0, column = 1, pady = 20, padx = 25)
+
+        date_pick_button = Button(calendar_screen, text = "Get Date", command = date)
+        date_pick_button.grid(row = 1, column = 1)
+
     # Login Function
     conn = sqlite3.connect('Telephone.db')
     cursor = conn.cursor()
@@ -167,7 +186,7 @@ def login():
     Photos_label = Label(main_screen, text = "Photos")
     Photos_label.grid(row = 1, column = 1, padx = 10)
 
-    calendar_button = Button(main_screen, image = calendar_image)
+    calendar_button = Button(main_screen, image = calendar_image, command = calendar)
     calendar_button.grid(row = 2, column = 0, padx = 10, pady = 10)
 
     calendar_label = Label(main_screen, text = "Calendar")
